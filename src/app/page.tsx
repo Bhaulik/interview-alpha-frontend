@@ -1,10 +1,90 @@
+"use client";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import CodeEditor from "@/components/ui/codeeditor";
+import { useEffect, useState } from "react";
 
 export default function Home() {
+  const [codeSolution, setCodeSolution] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [array, setArray] = useState([]);
+  const [code, setCode] = useState();
+
+  const [introduction, setIntroduction] = useState("");
+  const [execution, setExecution] = useState("");
+  const [optimization, setOptimization] = useState("");
+  const [errorsWarnings, setErrorsWarnings] = useState("");
+  const [conclusion, setConclusion] = useState("");
+  const [recommendations, setRecommendations] = useState("");
+  const [improvedCode, setImprovedCode] = useState("");
+
+  const addItem = (item) => {
+    setArray((prevArray) => [...prevArray, item]);
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      // Dummy API URL, replace with your actual API endpoint
+      const response = await fetch("http://127.0.0.1:8000/");
+      const data = await response.json();
+      console.log(data);
+      addItem(data.message);
+      setCode(data.input);
+      setIsLoading(false);
+      // Define regex patterns for each section
+      const introRegex =
+        /(?<=\*\*Introduction:\*\*\s+)([\s\S]*?)(?=\*\*Execution:\*\*)/;
+      const executionRegex =
+        /(?<=\*\*Execution:\*\*\s+)([\s\S]*?)(?=\*\*Optimization:\*\*)/;
+      const optimizationRegex =
+        /(?<=\*\*Optimization:\*\*\s+)([\s\S]*?)(?=\*\*Errors and Warnings:\*\*)/;
+      const errorsWarningsRegex =
+        /(?<=\*\*Errors and Warnings:\*\*\s+)([\s\S]*?)(?=\*\*Conclusion:\*\*)/;
+      const conclusionRegex =
+        /(?<=\*\*Conclusion:\*\*\s+)([\s\S]*?)(?=\*\*Recommendations:\*\*)/;
+      const recommendationsRegex =
+        /(?<=\*\*Recommendations:\*\*\s+)([\s\S]*?)(?=\*\*Improved Code:\*\*)/;
+      const codeRegex =
+        /(?<=\*\*Improved Code:\*\*\s+\`\`\`python\s+)([\s\S]*?)(?=\`\`\`)/;
+
+      // Extract each section
+      const introduction = data.message.match(introRegex)[0].trim();
+      const execution = data.message.match(executionRegex)[0].trim();
+      const optimization = data.message.match(optimizationRegex)[0].trim();
+      const errorsWarnings = data.message.match(errorsWarningsRegex)[0].trim();
+      const conclusion = data.message.match(conclusionRegex)[0].trim();
+      // const detectedLanguage = data.message.match(detectedLanguage)[0].trim();
+      const recommendations = data.message
+        .match(recommendationsRegex)[0]
+        .trim();
+      const improvedCode = data.message.match(codeRegex)[0].trim();
+
+      setIntroduction(introduction);
+      setExecution(execution);
+      setOptimization(optimization);
+      setErrorsWarnings(errorsWarnings);
+      setConclusion(conclusion);
+      setRecommendations(recommendations);
+      setImprovedCode(improvedCode);
+
+      // Output each section
+      console.log("Introduction:", introduction);
+      console.log("Execution:", execution);
+      console.log("Optimization:", optimization);
+      console.log("Errors and Warnings:", errorsWarnings);
+      console.log("Conclusion:", conclusion);
+      console.log("Recommendations:", recommendations);
+      console.log("Improved Code:", improvedCode);
+    };
+
+    if (isLoading) {
+      fetchData();
+      setCodeSolution(array[0] || "");
+    }
+  }, [array, isLoading]);
+
   return (
     <div className="m-6">
       <h1 className="text-2xl flex justify-center m-4">
@@ -15,55 +95,77 @@ export default function Home() {
       <div className="mt-20 m grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 lg:gap-8">
         <div className="rounded-lg border bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-lg font-medium">Write Solution Here</h2>
+            <h2 className="text-lg font-medium">Code Editor</h2>
             <Button>Run</Button>
           </div>
           {/* <Textarea
           className="h-[300px] w-full resize-none rounded-md border border-gray-200 bg-gray-50 p-3 text-sm shadow-sm transition-colors focus:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:focus:border-gray-600 dark:focus:ring-gray-600"
           placeholder="Enter your code here..."
         /> */}
-          <CodeEditor />
+          <CodeEditor code={code} />
         </div>
         <div className="rounded-lg border bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950">
           <h2 className="mb-4 text-lg font-medium">Test Cases Output</h2>
-          <ScrollArea className="h-[300px] rounded-md border border-gray-200 bg-gray-50 p-3 text-sm shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200">
-            <pre className="whitespace-pre-wrap break-words">
-              <code>
-                {`
-          function greet(name) {
-            console.log('Hello, ' + name + '!');
-          }
-          
-          greet('World');
-                      `}
-              </code>
-            </pre>
+          <ScrollArea className="h-[600px] rounded-md border border-gray-200 bg-gray-50 p-3 text-sm shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200">
+            {execution}
           </ScrollArea>
         </div>
         <div className="rounded-lg border bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-lg font-medium">Solution</h2>
-            <Button>Run</Button>
+            <Button>ReRun 🐉</Button>
           </div>
-          <Textarea
+          {/* <Textarea
             className="h-[300px] w-full resize-none rounded-md border border-gray-200 bg-gray-50 p-3 text-sm shadow-sm transition-colors focus:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:focus:border-gray-600 dark:focus:ring-gray-600"
             placeholder="Enter your code here..."
-          />
+          /> */}
+          <ScrollArea className="h-[300px] rounded-md border border-gray-200 bg-gray-50 p-3 text-sm shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200">
+            <pre className="whitespace-pre-wrap break-words">
+              <code>{code && code.trim()}</code>
+            </pre>
+          </ScrollArea>
           <p>Detected Language: </p>
         </div>
         <div className="rounded-lg border bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950">
-          <h2 className="mb-4 text-lg font-medium">Output</h2>
+          <h2 className="mb-4 text-lg font-medium">
+            {/* {array.map((item) => (
+              <li key={item}>{item}</li>
+            ))} */}
+            Improved Code
+            {/* {recommendations} */}
+          </h2>
           <ScrollArea className="h-[300px] rounded-md border border-gray-200 bg-gray-50 p-3 text-sm shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200">
             <pre className="whitespace-pre-wrap break-words">
-              <code>
-                {`
-          function greet(name) {
-            console.log('Hello, ' + name + '!');
-          }
-          
-          greet('World');
-                      `}
-              </code>
+              <code>{improvedCode}</code>
+            </pre>
+          </ScrollArea>
+        </div>
+        <div className="rounded-lg border bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950">
+          <h2 className="mb-4 text-lg font-medium">Recommendations</h2>
+          <ScrollArea className="h-[300px] rounded-md border border-gray-200 bg-gray-50 p-3 text-sm shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200">
+            <pre className="whitespace-pre-wrap break-words">
+              <code>{recommendations}</code>
+            </pre>
+          </ScrollArea>
+        </div>
+        <div className="rounded-lg border bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950">
+          <h2 className="mb-4 text-lg font-medium">
+            {/* {array.map((item) => (
+              <li key={item}>{item}</li>
+            ))} */}
+            Conclusion
+          </h2>
+          <ScrollArea className="h-[300px] rounded-md border border-gray-200 bg-gray-50 p-3 text-sm shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200">
+            <pre className="whitespace-pre-wrap break-words">
+              <code>{conclusion}</code>
+            </pre>
+          </ScrollArea>
+        </div>{" "}
+        <div className="rounded-lg border bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950">
+          <h2 className="mb-4 text-lg font-medium">Errors/Warnings</h2>
+          <ScrollArea className="h-[300px] rounded-md border border-gray-200 bg-gray-50 p-3 text-sm shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200">
+            <pre className="whitespace-pre-wrap break-words">
+              <code>{errorsWarnings}</code>
             </pre>
           </ScrollArea>
         </div>

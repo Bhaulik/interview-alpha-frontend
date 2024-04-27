@@ -5,7 +5,7 @@ import { javascript } from "@codemirror/lang-javascript";
 import CodeMirror from "@uiw/react-codemirror";
 
 function CodeEditor({ code = "console.log('Code Mirror!!!');" }) {
-  return <CodeMirror value={code} height="500px" />;
+  return <CodeMirror value={code.trim()} height="500px" />;
 }
 
 export default CodeEditor;
