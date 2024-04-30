@@ -13,8 +13,9 @@ import { Copy } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { CopyButton } from "@/components/ui/copybtn";
 import { Loader2 } from "lucide-react";
+import HeaderDiv from "@/components/ui/headerdiv";
 
-export default function Home() {
+export default function Home({ question }) {
   const sections = [
     { id: "execution", label: "Execution" },
     { id: "optimization", label: "Optimization" },
@@ -170,34 +171,9 @@ export default function Home() {
 
   return (
     <div className="m-6">
-      <div className="flex justify-between m-4">
-        <div>
-          <h1 className="text-2xl ">Interview Alpha AI</h1>
-          <span className="text-sm">Powered by Google Gemini AI</span>
-          <Link href="https://www.linkedin.com/in/bhaulik/">
-            <p className="text-sm underline">Developed by Bhaulik</p>
-          </Link>
-        </div>
-        <div>
-          <div className="flex">
-            <Input
-              className="w-80"
-              placeholder="Enter your GOOGLE_API_KEY here"
-            />
-            <Button className="ml-2 bg-blue-400">USE KEY</Button>
-          </div>
-          <p className="text-xs italic underline text-gray-600 mt-1">
-            <a
-              target="_blank"
-              href="https://support.google.com/googleapi/answer/6158862?hl=en"
-            >
-              not sure where to find it?
-            </a>
-          </p>
-        </div>
-      </div>
+      <HeaderDiv />
       <h1 className="text- flex justify-center m-4 text-orange-600">
-        Question:{}
+        Question:{question}
       </h1>
       <Navbar sections={sections} />
       <div className="mt-20 m grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 lg:gap-8">
@@ -206,23 +182,14 @@ export default function Home() {
             <CopyButton text={code} />
             <h2 className="text-lg font-medium">Code Editor 🤔</h2>
 
-            <Button
-              onClick={() => runCode()}
-              className={`w-40 flex justify-center items-center ${
-                isRunning
-                  ? "bg-gray-500 cursor-not-allowed"
-                  : "bg-blue-500 hover:bg-blue-700"
-              }`}
-              disabled={isRunning}
-            >
-              {isRunning ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                </>
-              ) : (
-                "Run Code"
-              )}
-            </Button>
+            {isRunning ? (
+              <Button disabled>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Please wait
+              </Button>
+            ) : (
+              <Button onClick={runCode}>Evaluate</Button>
+            )}
           </div>
           <div className="flex justify-end m-2"></div>
           {/* <Textarea
