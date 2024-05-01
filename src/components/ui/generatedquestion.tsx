@@ -34,6 +34,7 @@ function GeneratedQuestion({ questionData }) {
 
   return (
     <div className="max-w-xl mx-auto px-4 py-8">
+      <h1 className="text-2xl font-bold text-left mb-6">Question</h1>
       <h1 className="text-xl font-bold text-left mb-6">
         {questionData.problem}
       </h1>
