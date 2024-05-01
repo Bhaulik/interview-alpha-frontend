@@ -129,7 +129,9 @@ export default function Setup() {
         </form>
         <div>
           <code>
-            {isloading ? "Loading..." : GeneratedQuestion(generatedQuestion)}
+            {isloading
+              ? "Loading..."
+              : GeneratedQuestion({ questionData: generatedQuestion })}
           </code>
         </div>
       </div>
