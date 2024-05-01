@@ -35,6 +35,7 @@ export default function Setup() {
         "http://127.0.0.1:8000/generate_leetcode_question_breakdown",
         {
           method: "POST",
+          cache: "no-store",
           headers: {
             "Content-Type": "application/json",
           },

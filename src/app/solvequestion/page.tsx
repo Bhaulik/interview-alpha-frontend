@@ -19,6 +19,10 @@ import { useSearchParams } from "next/navigation";
 export default function Home({ question }) {
   const searchParams = useSearchParams();
   const questionFromParams = searchParams.get("q");
+  const testCasesFromParams = searchParams.get("test_cases");
+  const constraintsFromParams = searchParams.get("constraints");
+  const difficultyFromParams = searchParams.get("difficulty");
+  const topicsFromParams = searchParams.get("topics");
   console.log("Question from params:", questionFromParams);
 
   const sections = [
@@ -111,9 +115,30 @@ export default function Home({ question }) {
   return (
     <div className="m-6">
       <HeaderDiv />
-      <h1 className="text- flex justify-center m-4 text-orange-600">
-        Question:{questionFromParams}
-      </h1>
+      <div className="max-w-xl  mx-auto px-2 py-8">
+        <h1 className="text-2xl font-bold text-left mb-6">Question</h1>
+        <h1 className="text-lg text-left mb-6">{questionFromParams}</h1>
+
+        <div className="space-y-4">
+          <div>
+            <h2 className="text-xl font-semibold">Difficulty:</h2>
+            <p className="text-lg text-gray-700">{difficultyFromParams}</p>
+          </div>
+          <div>
+            <h2 className="text-xl font-semibold">Constraints:</h2>
+            <p className="text-lg text-gray-700">{constraintsFromParams}</p>
+          </div>
+
+          <div>
+            <h2 className="text-xl font-semibold">Topics:</h2>
+            <ul className="list-disc list-inside">{topicsFromParams}</ul>
+          </div>
+          <div>
+            <h2 className="text-xl font-semibold">Test Cases:</h2>
+            <ul>{testCasesFromParams}</ul>
+          </div>
+        </div>
+      </div>
       <Navbar sections={sections} />
       <div className="mt-20 m grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 lg:gap-8">
         <div className="rounded-lg border bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950">

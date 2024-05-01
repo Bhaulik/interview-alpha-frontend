@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import Link from "next/link";
 
 function convertElementsToStrings(arr) {
   return arr.map((item) => {
@@ -12,47 +13,51 @@ function convertElementsToStrings(arr) {
   });
 }
 
-function GeneratedQuestion({ questionData }) {
-  const data = questionData;
+function GeneratedQuestion({ questionData: questionDataParsed }) {
+  // const data = questionData;
   // Ensure data is not undefined and is correctly parsed
-  if (!data) {
+  if (!questionDataParsed) {
     return <div>Data Not Loaded Yet!</div>;
   }
 
   // Attempt to parse the data if it's in string format
-  console.log("json parsing data", data);
+  console.log("json parsing data", questionDataParsed);
   try {
-    console.log("json parsing data", data);
-    questionData = JSON.parse(data);
-    console.log(questionData);
+    console.log("json parsing data", questionDataParsed);
+    questionDataParsed = JSON.parse(questionDataParsed);
+    console.log(questionDataParsed);
   } catch (error) {
     console.error("Error parsing data:", error);
     return <div>Please try to regenerate the question 😊</div>;
   }
 
-  console.log("The question object is: ", questionData);
+  console.log("The question object is: ", questionDataParsed);
 
   return (
     <div className="max-w-xl mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold text-left mb-6">Question</h1>
       <h1 className="text-xl font-bold text-left mb-6">
-        {questionData.problem}
+        {questionDataParsed.problem}
       </h1>
 
       <div className="space-y-4">
         <div>
           <h2 className="text-xl font-semibold">Difficulty:</h2>
-          <p className="text-lg text-gray-700">{questionData.difficulty}</p>
+          <p className="text-lg text-gray-700">
+            {questionDataParsed.difficulty}
+          </p>
         </div>
         <div>
           <h2 className="text-xl font-semibold">Constraints:</h2>
-          <p className="text-lg text-gray-700">{questionData.constraints}</p>
+          <p className="text-lg text-gray-700">
+            {questionDataParsed.constraints}
+          </p>
         </div>
 
         <div>
           <h2 className="text-xl font-semibold">Topics:</h2>
           <ul className="list-disc list-inside">
-            {questionData.topics.map((topic, index) => (
+            {questionDataParsed.topics.map((topic, index) => (
               <li key={index} className="text-lg text-gray-700">
                 {topic}
               </li>
@@ -62,8 +67,8 @@ function GeneratedQuestion({ questionData }) {
         <div>
           <h2 className="text-xl font-semibold">Test Cases:</h2>
           <ul className="list-disc list-inside">
-            {Array.isArray(questionData.test_cases) &&
-              convertElementsToStrings(questionData.test_cases).map(
+            {Array.isArray(questionDataParsed.test_cases) &&
+              convertElementsToStrings(questionDataParsed.test_cases).map(
                 (topic, index) => (
                   <li key={index} className="text-lg text-gray-700">
                     {topic}
@@ -71,6 +76,23 @@ function GeneratedQuestion({ questionData }) {
                 )
               )}
           </ul>
+        </div>
+        <div>
+          <Link
+            className="text-blue-500 hover:text-blue-700"
+            href={{
+              pathname: "/solvequestion",
+              query: {
+                q: questionDataParsed.problem,
+                test_cases: questionDataParsed.test_cases,
+                topics: questionDataParsed.topics,
+                constraints: questionDataParsed.constraints,
+                difficulty: questionDataParsed.difficulty,
+              },
+            }}
+          >
+            Solve Problem
+          </Link>
         </div>
       </div>
     </div>
