@@ -103,72 +103,6 @@ export default function Home({ question }) {
     setIsRunning(false);
   };
 
-  // if (isLoading) {
-  //   fetchData();
-  //   setCodeSolution(array[0] || "");
-  // }
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     // Dummy API URL, replace with your actual API endpoint
-  //     const response = await fetch("http://127.0.0.1:8000/");
-  //     const data = await response.json();
-  //     console.log(data);
-  //     addItem(data.message);
-  //     setCode(data.input);
-  //     setIsLoading(false);
-  //     // Define regex patterns for each section
-  //     const introRegex =
-  //       /(?<=\*\*Introduction:\*\*\s+)([\s\S]*?)(?=\*\*Execution:\*\*)/;
-  //     const executionRegex =
-  //       /(?<=\*\*Execution:\*\*\s+)([\s\S]*?)(?=\*\*Optimization:\*\*)/;
-  //     const optimizationRegex =
-  //       /(?<=\*\*Optimization:\*\*\s+)([\s\S]*?)(?=\*\*Errors and Warnings:\*\*)/;
-  //     const errorsWarningsRegex =
-  //       /(?<=\*\*Errors and Warnings:\*\*\s+)([\s\S]*?)(?=\*\*Conclusion:\*\*)/;
-  //     const conclusionRegex =
-  //       /(?<=\*\*Conclusion:\*\*\s+)([\s\S]*?)(?=\*\*Recommendations:\*\*)/;
-  //     const recommendationsRegex =
-  //       /(?<=\*\*Recommendations:\*\*\s+)([\s\S]*?)(?=\*\*Improved Code:\*\*)/;
-  //     const codeRegex =
-  //       /(?<=\*\*Improved Code:\*\*\s+\`\`\`python\s+)([\s\S]*?)(?=\`\`\`)/;
-
-  //     // Extract each section
-  //     const introduction = data.message.match(introRegex)[0].trim();
-  //     const execution = data.message.match(executionRegex)[0].trim();
-  //     const optimization = data.message.match(optimizationRegex)[0].trim();
-  //     const errorsWarnings = data.message.match(errorsWarningsRegex)[0].trim();
-  //     const conclusion = data.message.match(conclusionRegex)[0].trim();
-  //     // const detectedLanguage = data.message.match(detectedLanguage)[0].trim();
-  //     const recommendations = data.message
-  //       .match(recommendationsRegex)[0]
-  //       .trim();
-  //     const improvedCode = data.message.match(codeRegex)[0].trim();
-
-  //     setIntroduction(introduction);
-  //     setExecution(execution);
-  //     setOptimization(optimization);
-  //     setErrorsWarnings(errorsWarnings);
-  //     setConclusion(conclusion);
-  //     setRecommendations(recommendations);
-  //     setImprovedCode(improvedCode);
-
-  //     // Output each section
-  //     console.log("Introduction:", introduction);
-  //     console.log("Execution:", execution);
-  //     console.log("Optimization:", optimization);
-  //     console.log("Errors and Warnings:", errorsWarnings);
-  //     console.log("Conclusion:", conclusion);
-  //     console.log("Recommendations:", recommendations);
-  //     console.log("Improved Code:", improvedCode);
-  //   };
-
-  //   if (isLoading) {
-  //     fetchData();
-  //     setCodeSolution(array[0] || "");
-  //   }
-  // }, [array, isLoading]);
-
   return (
     <div className="m-6">
       <HeaderDiv />
@@ -233,9 +167,6 @@ export default function Home({ question }) {
         </div>
         <div className="rounded-lg border bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950">
           <h2 className="mb-4 text-lg font-medium">
-            {/* {array.map((item) => (
-              <li key={item}>{item}</li>
-            ))} */}
             Improved Code
             {/* {recommendations} */}
           </h2>
@@ -260,12 +191,7 @@ export default function Home({ question }) {
           </ScrollArea>
         </div>
         <div className="rounded-lg border bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950">
-          <h2 className="mb-4 text-lg font-medium">
-            {/* {array.map((item) => (
-              <li key={item}>{item}</li>
-            ))} */}
-            Conclusion
-          </h2>
+          <h2 className="mb-4 text-lg font-medium">Conclusion</h2>
           <ScrollArea className="h-[300px] rounded-md border border-gray-200 bg-gray-50 p-3 text-sm shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200">
             <pre className="whitespace-pre-wrap break-words">
               <code>{conclusion}</code>

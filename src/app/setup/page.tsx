@@ -8,30 +8,23 @@ import {
   SelectContent,
   Select,
 } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Checkbox } from "@/components/ui/checkbox"; // Import the Checkbox component from shadcn
 import { Button } from "@/components/ui/button";
 import HeaderDiv from "@/components/ui/headerdiv";
-import GenerateQuestion from "@/components/ui/generatedquestion";
 import GeneratedQuestion from "@/components/ui/generatedquestion";
 
 export default function Setup() {
   const [difficulty, setDifficulty] = useState("medium");
-  const [dataStructures, setDataStructures] = useState([]);
+  const [dataStructures, setDataStructures] = useState(new Set());
   const [generatedQuestion, setGeneratedQuestion] = useState("");
   const [isloading, setIsLoading] = useState(false);
-
-  const handleCheckboxChange = (event) => {
-    const { value, checked } = event.target;
-    setDataStructures((prev) =>
-      checked ? [...prev, value] : prev.filter((ds) => ds !== value)
-    );
-  };
+  const items = ["array", "hash-map", "linked-list", "trees", "graphs", "Any"];
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const body = {
       difficulty,
-      ds: dataStructures.join(", "), // Assuming API can handle this format, adjust if needed
+      ds: Array.from(dataStructures).join(", "), // Assuming API can handle this format, adjust if needed
     };
 
     console.log(body);
@@ -64,6 +57,18 @@ export default function Setup() {
     } catch (error) {
       console.error("Error:", error);
     }
+  };
+
+  const handleDataStructureChange = (item) => {
+    setDataStructures((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(item)) {
+        newSet.delete(item);
+      } else {
+        newSet.add(item);
+      }
+      return newSet;
+    });
   };
 
   return (
@@ -100,27 +105,14 @@ export default function Setup() {
             <div className="col-span-2 space-y-2">
               <Label htmlFor="data-structures">Data Structures</Label>
               <div className="grid grid-cols-3 gap-2">
-                {[
-                  "array",
-                  "hash-map",
-                  "linked-list",
-                  "trees",
-                  "graphs",
-                  "Any",
-                ].map((ds) => (
-                  <Label key={ds} className="flex items-center gap-2">
+                {items.map((item) => (
+                  <div key={item} className="flex items-center gap-2">
                     <Checkbox
-                      id={`data-structures-${ds}`}
-                      value={ds}
-                      onChange={handleCheckboxChange}
+                      checked={dataStructures.has(item)}
+                      onCheckedChange={() => handleDataStructureChange(item)}
                     />
-                    {ds
-                      .split("-")
-                      .map(
-                        (word) => word.charAt(0).toUpperCase() + word.slice(1)
-                      )
-                      .join(" ")}
-                  </Label>
+                    <Label>{item}</Label>
+                  </div>
                 ))}
               </div>
             </div>
