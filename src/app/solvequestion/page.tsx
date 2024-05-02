@@ -2,6 +2,18 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
 import { ScrollArea } from "@/components/ui/scroll-area";
 import CodeEditor from "@/components/ui/codeeditor";
 import { useEffect, useState } from "react";
@@ -45,11 +57,11 @@ export default function Home() {
   console.log("Question from params:", questionFromParams);
   console.log("Question from test Cases:", testCasesFromParams);
   const sections = [
-    { id: "execution", label: "Execution" },
-    { id: "optimization", label: "Optimization" },
-    { id: "improvedCode", label: "Improved Code" },
-    { id: "recommendations", label: "Recommendations" },
-    { id: "conclusion", label: "Conclusion" },
+    { id: "codeeditor", label: "Code Editor" },
+    { id: "testcaseoutput", label: "Test Cases Output" },
+    { id: "improvedCode", label: "Code Metrics" },
+    { id: "recommendations", label: "Optimal Solution" },
+    { id: "conclusion", label: "Code Report" },
     { id: "errorsWarnings", label: "Errors/Warnings" },
   ];
   //   const [codeSolution, setCodeSolution] = useState("");
@@ -82,6 +94,7 @@ export default function Home() {
   };
 
   const runCode = async () => {
+    setIsRunning(true);
     try {
       const response = await fetch("http://127.0.0.1:8000/code_execute", {
         method: "POST",
@@ -97,7 +110,6 @@ export default function Home() {
           "Content-Type": "application/json",
         },
       });
-      setIsRunning(true);
 
       if (!response.ok) {
         setIsRunning(false);
@@ -161,66 +173,91 @@ export default function Home() {
         </div>
       </div>
       <Navbar sections={sections} />
-      <div className="mt-20 m grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 lg:gap-8">
-        <div className="rounded-lg border bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950">
-          <div className="mb-4 flex items-center justify-between">
-            <CopyButton text={code} />
-            <h2 className="text-lg font-medium">Code Editor 🤔</h2>
-            {isRunning ? (
-              <Button disabled>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Please wait
-              </Button>
-            ) : (
-              <Button onClick={runCode}>Evaluate</Button>
-            )}
+      <AlertDialog>
+        <div className="mt-20 m grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 lg:gap-8">
+          <div className="rounded-lg border bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950">
+            <div className="mb-4 flex items-center justify-between">
+              <CopyButton text={code} />
+              <h2 className="text-lg font-medium">Code Editor 🤔</h2>
+              {isRunning ? (
+                <Button disabled>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Please wait
+                </Button>
+              ) : (
+                <AlertDialogTrigger onClick={runCode}>
+                  Evaluate
+                </AlertDialogTrigger>
+              )}
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>
+                    {isRunning
+                      ? "Gemini is Evaluating your Submission 🚀"
+                      : "Evaluated ✅"}
+                  </AlertDialogTitle>
+                  <AlertDialogDescription>
+                    {isRunning
+                      ? "Please Wait 🕒"
+                      : "You may now Close the Dialog"}
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  {!isRunning && (
+                    <>
+                      <AlertDialogCancel>Close</AlertDialogCancel>
+                    </>
+                  )}
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </div>
+            <div className="flex justify-end m-2"></div>
+            <CodeEditor code={code} setCode={setCode} />
           </div>
-          <div className="flex justify-end m-2"></div>
-          <CodeEditor code={code} setCode={setCode} />
-        </div>
-        <div
-          id="execution"
-          className="execution rounded-lg border bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950"
-        >
-          <h2 className="mb-4 text-lg font-medium">Test Cases Output</h2>
-          {convertElementsToStrings(testCaseOutput)}
-          {convertElementsToStrings(testCasesUsed)}
-        </div>
-        <div
-          id="code-metrics"
-          className="code-metrics rounded-lg border bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950"
-        >
-          <h2 className="mb-4 text-lg font-medium">Code Metrics 🧮</h2>
-          <CodeMetrics
-            time_complexity={timeComplexity}
-            space_complexity={spaceComplexity}
-            code_quality_meter={codeQualityMeter}
-          />
-          <div>Language detected: {programmingLanguage}</div>
-        </div>
-        <div className="rounded-lg border bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950">
-          <h2 className="mb-4 text-lg font-medium">Optimal Solution</h2>
-          <ScrollArea className="h-[300px] rounded-md border border-gray-200 bg-gray-50 p-3 text-sm shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200">
-            <pre className="whitespace-pre-wrap break-words">
-              <code>{optimalSolution}</code>
-            </pre>
-          </ScrollArea>
-        </div>{" "}
-        <div className="rounded-lg border bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950">
-          <h2 className="mb-4 text-lg font-medium">Code Report</h2>
-          <ScrollArea className="h-[300px] rounded-md border border-gray-200 bg-gray-50 p-3 text-sm shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200">
-            <pre className="whitespace-pre-wrap break-words">
-              <code>{codeReport}</code>
-            </pre>
-          </ScrollArea>
-        </div>{" "}
-        <div className="rounded-lg border bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950">
-          <h2 className="mb-4 text-lg font-medium"></h2>
-          <div>
-            <FetchYouTubeData qs={questionFromParams} />
+          <div
+            id="execution"
+            className="execution rounded-lg border bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950"
+          >
+            <h2 className="mb-4 text-lg font-medium">Test Cases Output</h2>
+            {convertElementsToStrings(testCaseOutput)}
+            {convertElementsToStrings(testCasesUsed)}
+          </div>
+          <div
+            id="code-metrics"
+            className="code-metrics rounded-lg border bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950"
+          >
+            <h2 className="mb-4 text-lg font-medium">Code Metrics 🧮</h2>
+            <CodeMetrics
+              time_complexity={timeComplexity}
+              space_complexity={spaceComplexity}
+              code_quality_meter={codeQualityMeter}
+            />
+            <div>Language detected: {programmingLanguage}</div>
+          </div>
+          <div className="rounded-lg border bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950">
+            <h2 className="mb-4 text-lg font-medium">Optimal Solution</h2>
+            <ScrollArea className="h-[300px] rounded-md border border-gray-200 bg-gray-50 p-3 text-sm shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200">
+              <pre className="whitespace-pre-wrap break-words">
+                <code>{optimalSolution}</code>
+              </pre>
+            </ScrollArea>
+          </div>{" "}
+          <div className="rounded-lg border bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950">
+            <h2 className="mb-4 text-lg font-medium">Code Report</h2>
+            <ScrollArea className="h-[300px] rounded-md border border-gray-200 bg-gray-50 p-3 text-sm shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200">
+              <pre className="whitespace-pre-wrap break-words">
+                <code>{codeReport}</code>
+              </pre>
+            </ScrollArea>
+          </div>{" "}
+          <div className="rounded-lg border bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950">
+            <h2 className="mb-4 text-lg font-medium"></h2>
+            <div>
+              <FetchYouTubeData qs={questionFromParams} />
+            </div>
           </div>
         </div>
-      </div>
+      </AlertDialog>
     </div>
   );
 }
