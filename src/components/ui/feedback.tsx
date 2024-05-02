@@ -1,13 +1,15 @@
 import React from "react";
 
-const CodeMetrics = ({ metrics }) => {
-  const {
-    time_complexity,
-    space_complexity,
-    syntax_errors,
-    successful_compilation,
-    code_quality_meter,
-  } = metrics;
+const CodeMetrics = ({
+  time_complexity,
+  space_complexity,
+  code_quality_meter,
+}) => {
+  // const {
+  //   time_complexity,
+  //   space_complexity,
+  //   code_quality_meter,
+  // } = metrics;
 
   const complexityToPercentage = (complexity) => {
     // Simple example of mapping, needs real logic based on actual expected values
@@ -61,16 +63,6 @@ const CodeMetrics = ({ metrics }) => {
               style={{ width: `${complexityToPercentage(space_complexity)}%` }}
             ></div>
           </div>
-        </div>
-        <div>
-          <h3 className="font-medium text-gray-700">
-            Syntax Errors: {syntax_errors || "None"}
-          </h3>
-        </div>
-        <div>
-          <h3 className="font-medium text-gray-700">
-            Compilation: {successful_compilation ? "Successful" : "Failed"}
-          </h3>
         </div>
         <div>
           <h3 className="font-medium text-gray-700">

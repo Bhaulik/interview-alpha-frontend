@@ -13,6 +13,20 @@ function convertElementsToStrings(arr) {
   });
 }
 
+function convertElementsToSingleString(arr) {
+  var res = [];
+  return arr.map((item) => {
+    if (typeof item === "object" && item !== null) {
+      // Convert object to string using JSON.stringify for a straightforward representation
+      res.push(JSON.stringify(item));
+    } else {
+      res.push(item);
+    }
+    // Return the item as is if it's already a string or any other type
+    return res.join(", ");
+  });
+}
+
 function GeneratedQuestion({ questionData: questionDataParsed }) {
   // const data = questionData;
   // Ensure data is not undefined and is correctly parsed
@@ -84,7 +98,9 @@ function GeneratedQuestion({ questionData: questionDataParsed }) {
               pathname: "/solvequestion",
               query: {
                 q: questionDataParsed.problem,
-                test_cases: questionDataParsed.test_cases,
+                test_cases: convertElementsToSingleString(
+                  questionDataParsed.test_cases
+                ),
                 topics: questionDataParsed.topics,
                 constraints: questionDataParsed.constraints,
                 difficulty: questionDataParsed.difficulty,

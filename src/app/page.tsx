@@ -1,221 +1,134 @@
-"use client";
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import CodeEditor from "@/components/ui/codeeditor";
-import { useEffect, useState } from "react";
-import Navbar from "@/components/nav";
-import TestCaseDisplay from "@/components/ui/testcases";
-import CodeMetrics from "@/components/ui/feedback";
 import Link from "next/link";
-import { Copy } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { CopyButton } from "@/components/ui/copybtn";
-import { Loader2 } from "lucide-react";
-import HeaderDiv from "@/components/ui/headerdiv";
-import { useSearchParams } from "next/navigation";
+import { CardContent, Card } from "@/components/ui/card";
+import Image from "next/image";
+// import aijpeg from "../../../public/ai.jpeg";
+import {
+  CarouselItem,
+  CarouselContent,
+  CarouselPrevious,
+  CarouselNext,
+  Carousel,
+} from "@/components/ui/carousel";
 
-export default function Home({ question }) {
-  const searchParams = useSearchParams();
-  const questionFromParams = searchParams.get("q");
-  console.log("Question from params:", questionFromParams);
-
-  const sections = [
-    { id: "execution", label: "Execution" },
-    { id: "optimization", label: "Optimization" },
-    { id: "improvedCode", label: "Improved Code" },
-    { id: "recommendations", label: "Recommendations" },
-    { id: "conclusion", label: "Conclusion" },
-    { id: "errorsWarnings", label: "Errors/Warnings" },
-  ];
-  const [codeSolution, setCodeSolution] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
-  const [array, setArray] = useState([]);
-  const [code, setCode] = useState();
-
-  const [introduction, setIntroduction] = useState("");
-  const [execution, setExecution] = useState("");
-  const [optimization, setOptimization] = useState("");
-  const [errorsWarnings, setErrorsWarnings] = useState("");
-  const [conclusion, setConclusion] = useState("");
-  const [recommendations, setRecommendations] = useState("");
-  const [improvedCode, setImprovedCode] = useState("");
-  const [isRunning, setIsRunning] = useState(false);
-
-  const metrics = {
-    time_complexity: "O(n)",
-    space_complexity: "O(n)",
-    syntax_errors: null,
-    successful_compilation: true,
-    code_quality_meter: 8,
-  };
-  const addItem = (item) => {
-    setArray((prevArray) => [...prevArray, item]);
-  };
-
-  const runCode = async () => {
-    // Dummy API URL, replace with your actual API endpoint
-    const response = await fetch("http://127.0.0.1:8000/");
-    setIsRunning(true);
-    const data = await response.json();
-    console.log(data);
-    addItem(data.message);
-    setCode(data.input);
-    setIsLoading(false);
-    // Define regex patterns for each section
-    const introRegex =
-      /(?<=\*\*Introduction:\*\*\s+)([\s\S]*?)(?=\*\*Execution:\*\*)/;
-    const executionRegex =
-      /(?<=\*\*Execution:\*\*\s+)([\s\S]*?)(?=\*\*Optimization:\*\*)/;
-    const optimizationRegex =
-      /(?<=\*\*Optimization:\*\*\s+)([\s\S]*?)(?=\*\*Errors and Warnings:\*\*)/;
-    const errorsWarningsRegex =
-      /(?<=\*\*Errors and Warnings:\*\*\s+)([\s\S]*?)(?=\*\*Conclusion:\*\*)/;
-    const conclusionRegex =
-      /(?<=\*\*Conclusion:\*\*\s+)([\s\S]*?)(?=\*\*Recommendations:\*\*)/;
-    const recommendationsRegex =
-      /(?<=\*\*Recommendations:\*\*\s+)([\s\S]*?)(?=\*\*Improved Code:\*\*)/;
-    const codeRegex =
-      /(?<=\*\*Improved Code:\*\*\s+\`\`\`python\s+)([\s\S]*?)(?=\`\`\`)/;
-
-    // Extract each section
-    const introduction = data.message.match(introRegex)[0].trim();
-    const execution = data.message.match(executionRegex)[0].trim();
-    const optimization = data.message.match(optimizationRegex)[0].trim();
-    const errorsWarnings = data.message.match(errorsWarningsRegex)[0].trim();
-    const conclusion = data.message.match(conclusionRegex)[0].trim();
-    // const detectedLanguage = data.message.match(detectedLanguage)[0].trim();
-    const recommendations = data.message.match(recommendationsRegex)[0].trim();
-    const improvedCode = data.message.match(codeRegex)[0].trim();
-
-    setIntroduction(introduction);
-    setExecution(execution);
-    setOptimization(optimization);
-    setErrorsWarnings(errorsWarnings);
-    setConclusion(conclusion);
-    setRecommendations(recommendations);
-    setImprovedCode(improvedCode);
-
-    // Output each section
-    console.log("Introduction:", introduction);
-    console.log("Execution:", execution);
-    console.log("Optimization:", optimization);
-    console.log("Errors and Warnings:", errorsWarnings);
-    console.log("Conclusion:", conclusion);
-    console.log("Recommendations:", recommendations);
-    console.log("Improved Code:", improvedCode);
-    setIsRunning(false);
-  };
-
+export default function Component() {
   return (
-    <div className="m-6">
-      <HeaderDiv />
-      <h1 className="text- flex justify-center m-4 text-orange-600">
-        Question:{questionFromParams}
-      </h1>
-      <Navbar sections={sections} />
-      <div className="mt-20 m grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 lg:gap-8">
-        <div className="rounded-lg border bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950">
-          <div className="mb-4 flex items-center justify-between">
-            <CopyButton text={code} />
-            <h2 className="text-lg font-medium">Code Editor 🤔</h2>
+    <>
+      <section className="w-full py-12 md:py-24 lg:py-32">
+        <div className="container px-4 md:px-6">
+          <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
+            <div className="flex flex-col justify-center space-y-4">
+              <div className="space-y-2">
+                <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
+                  Conquer Coding Challenges with Ease
+                </h1>
+                <h1 className="text-2xl font-bold tracking-tighter sm:text-2xl xl:text-2xl/none">
+                  Powered by Google Gemini ai
+                </h1>
 
-            {isRunning ? (
-              <Button disabled>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Please wait
-              </Button>
-            ) : (
-              <Button onClick={runCode}>Evaluate</Button>
-            )}
+                <p className="max-w-[600px] text-gray-500 md:text-xl dark:text-gray-400">
+                  Elevate your coding skills with our AI-powered Interview
+                  interviewer. Unlock personalized practice and tailored
+                  feedback
+                </p>
+              </div>
+              <div className="flex flex-col gap-2 min-[400px]:flex-row">
+                <Link
+                  className="inline-flex h-10 items-center justify-center rounded-md bg-gray-900 px-8 text-sm font-medium text-gray-50 shadow transition-colors hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50/90 dark:focus-visible:ring-gray-300"
+                  href="/setup"
+                >
+                  Get Started
+                </Link>
+              </div>
+            </div>
           </div>
-          <div className="flex justify-end m-2"></div>
-          {/* <Textarea
-          className="h-[300px] w-full resize-none rounded-md border border-gray-200 bg-gray-50 p-3 text-sm shadow-sm transition-colors focus:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:focus:border-gray-600 dark:focus:ring-gray-600"
-          placeholder="Enter your code here..."
-        /> */}
-          <CodeEditor code={code} />
         </div>
-        <div
-          id="execution"
-          className="execution rounded-lg border bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950"
-        >
-          <h2 className="mb-4 text-lg font-medium">Test Cases Output</h2>
-          {/* <ScrollArea className="h-[600px] rounded-md border border-gray-200 bg-gray-50 p-3 text-sm shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200"> */}
-          {/* {execution} */}
-          {/* <TestCaseDisplay text={execution} /> */}
-          {/* </ScrollArea> */}
-        </div>{" "}
-        <div
-          id="code-metrics"
-          className="code-metrics rounded-lg border bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950"
-        >
-          <h2 className="mb-4 text-lg font-medium">Code Metrics 🧮</h2>
-          <CodeMetrics metrics={metrics} />
-        </div>
-        <div className="rounded-lg border bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-lg font-medium">Solution</h2>
-            <Button>ReRun 🐉</Button>
+      </section>
+      <section className="w-full py-12 md:py-24 lg:py-32">
+        <div className="container space-y-12 px-4 md:px-6">
+          <div className="mx-auto grid max-w-sm items-start gap-8 sm:max-w-4xl sm:grid-cols-2 md:gap-12 lg:max-w-5xl lg:grid-cols-3">
+            <div className="grid gap-1">
+              <RocketIcon className="h-8 w-8 text-gray-900 dark:text-gray-50" />
+              <h3 className="text-lg font-bold">Personalized Practice</h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Our AI-driven platform analyzes your strengths and weaknesses to
+                provide tailored coding challenges, helping you improve
+                efficiently.
+              </p>
+            </div>
+            <div className="grid gap-1">
+              <ReplyIcon className="h-8 w-8 text-gray-900 dark:text-gray-50" />
+              <h3 className="text-lg font-bold">Actionable Feedback</h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Receive detailed feedback on your solutions, including
+                performance analysis and suggestions for improvement, to
+                accelerate your learning.
+              </p>
+            </div>
           </div>
-          {/* <Textarea
-            className="h-[300px] w-full resize-none rounded-md border border-gray-200 bg-gray-50 p-3 text-sm shadow-sm transition-colors focus:border-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:focus:border-gray-600 dark:focus:ring-gray-600"
-            placeholder="Enter your code here..."
-          /> */}
-          <ScrollArea className="h-[300px] rounded-md border border-gray-200 bg-gray-50 p-3 text-sm shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200">
-            <pre className="whitespace-pre-wrap break-words">
-              <code>{code && code.trim()}</code>
-            </pre>
-          </ScrollArea>
-          <p>Detected Language: </p>
         </div>
-        <div className="rounded-lg border bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950">
-          <h2 className="mb-4 text-lg font-medium">
-            Improved Code
-            {/* {recommendations} */}
-          </h2>
-          <ScrollArea className="h-[300px] rounded-md border border-gray-200 bg-gray-50 p-3 text-sm shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200">
-            <pre className="whitespace-pre-wrap break-words">
-              <code>{improvedCode}</code>
-            </pre>
-          </ScrollArea>
-        </div>
-        <div className="rounded-lg border bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950">
-          <h2 className="mb-4 text-lg font-medium">
-            Recommendations/Optimizations 🚀
-          </h2>
-          <ScrollArea className="h-[300px] rounded-md border border-gray-200 bg-gray-50 p-3 text-sm shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200">
-            <pre className="whitespace-pre-wrap break-words">
-              <code>{optimization}</code>
-            </pre>
-            <div>--------------------------</div>
-            <pre className="whitespace-pre-wrap break-words">
-              <code>{recommendations}</code>
-            </pre>
-          </ScrollArea>
-        </div>
-        <div className="rounded-lg border bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950">
-          <h2 className="mb-4 text-lg font-medium">Conclusion</h2>
-          <ScrollArea className="h-[300px] rounded-md border border-gray-200 bg-gray-50 p-3 text-sm shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200">
-            <pre className="whitespace-pre-wrap break-words">
-              <code>{conclusion}</code>
-            </pre>
-          </ScrollArea>
-        </div>{" "}
-        <div className="rounded-lg border bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950">
-          <h2 className="mb-4 text-lg font-medium">Errors/Warnings</h2>
-          <ScrollArea className="h-[300px] rounded-md border border-gray-200 bg-gray-50 p-3 text-sm shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200">
-            <pre className="whitespace-pre-wrap break-words">
-              <code>{errorsWarnings}</code>
-            </pre>
-          </ScrollArea>
-        </div>
-        <div className="rounded-lg border bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950">
-          <h2 className="mb-4 text-lg font-medium">Web Resources</h2>
-          <div></div>
-        </div>
-      </div>
-    </div>
+      </section>
+    </>
+  );
+}
+
+function ReplyIcon(props) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <polyline points="9 17 4 12 9 7" />
+      <path d="M20 18v-2a4 4 0 0 0-4-4H4" />
+    </svg>
+  );
+}
+
+function RocketIcon(props) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" />
+      <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" />
+      <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0" />
+      <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" />
+    </svg>
+  );
+}
+
+function UserIcon(props) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+      <circle cx="12" cy="7" r="4" />
+    </svg>
   );
 }

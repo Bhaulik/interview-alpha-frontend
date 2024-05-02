@@ -4,7 +4,7 @@ import React, { useEffect, useRef } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { bbedit, bbeditInit } from "@uiw/codemirror-theme-bbedit";
 import { tags as t } from "@lezer/highlight";
-function CodeEditor({ code = "console.log('Code Mirror!!!');" }) {
+function CodeEditor({ code = "", setCode }) {
   return (
     <CodeMirror
       value={code.trim()}
@@ -17,7 +17,8 @@ function CodeEditor({ code = "console.log('Code Mirror!!!');" }) {
         styles: [{ tag: t.comment, color: "#6272a4" }],
       })}
       onChange={(value, viewUpdate) => {
-        console.log("value:", value);
+        // console.log("value:", value);
+        setCode(value);
       }}
     />
   );
