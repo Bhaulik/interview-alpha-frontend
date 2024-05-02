@@ -15,6 +15,7 @@ import { CopyButton } from "@/components/ui/copybtn";
 import { Loader2 } from "lucide-react";
 import HeaderDiv from "@/components/ui/headerdiv";
 import { useSearchParams } from "next/navigation";
+import FetchYouTubeData from "@/components/ui/web_resources";
 
 function convertElementsToStrings(arr) {
   if (typeof arr === "string" || arr instanceof String) {
@@ -73,16 +74,9 @@ export default function Home() {
   const [optimalSolution, setOptimalSolution] = useState("");
   const [testCaseOutput, setTestCaseOutput] = useState();
   const [programmingLanguage, setProgrammingLanguage] = useState("");
-  //   const [rightSolution, setRightSolution] = useState(false);
+  const [rightSolution, setRightSolution] = useState(false);
   const [testCasesUsed, setTestCasesUsed] = useState();
 
-  //   const metrics = {
-  //     time_complexity: "O(n)",
-  //     space_complexity: "O(n)",
-  //     syntax_errors: null,
-  //     successful_compilation: true,
-  //     code_quality_meter: 8,
-  //   };
   const addItem = (item) => {
     setArray((prevArray) => [...prevArray, item]);
   };
@@ -129,9 +123,12 @@ export default function Home() {
       setTestCaseOutput(data.test_case_output);
       setProgrammingLanguage(data.programming_language);
       setTestCasesUsed(data.test_cases_used);
+      setRightSolution(data.right_solution);
       // console.log("parsedjson", JSON.parse(data));
       setIsRunning(false);
     } catch (e) {
+      setIsRunning(false);
+
       console.error("Error:", e);
     }
   };
@@ -188,7 +185,7 @@ export default function Home() {
           <h2 className="mb-4 text-lg font-medium">Test Cases Output</h2>
           {convertElementsToStrings(testCaseOutput)}
           {convertElementsToStrings(testCasesUsed)}
-        </div>{" "}
+        </div>
         <div
           id="code-metrics"
           className="code-metrics rounded-lg border bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950"
@@ -218,8 +215,10 @@ export default function Home() {
           </ScrollArea>
         </div>{" "}
         <div className="rounded-lg border bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950">
-          <h2 className="mb-4 text-lg font-medium">Web Resources</h2>
-          <div></div>
+          <h2 className="mb-4 text-lg font-medium"></h2>
+          <div>
+            <FetchYouTubeData qs={questionFromParams} />
+          </div>
         </div>
       </div>
     </div>

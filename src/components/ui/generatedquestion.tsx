@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 function convertElementsToStrings(arr) {
   return arr.map((item) => {
@@ -92,23 +93,24 @@ function GeneratedQuestion({ questionData: questionDataParsed }) {
           </ul>
         </div>
         <div>
-          <Link
-            className="text-blue-500 hover:text-blue-700"
-            href={{
-              pathname: "/solvequestion",
-              query: {
-                q: questionDataParsed.problem,
-                test_cases: convertElementsToSingleString(
-                  questionDataParsed.test_cases
-                ),
-                topics: questionDataParsed.topics,
-                constraints: questionDataParsed.constraints,
-                difficulty: questionDataParsed.difficulty,
-              },
-            }}
-          >
-            Solve Problem
-          </Link>
+          <Button>
+            <Link
+              href={{
+                pathname: "/solvequestion",
+                query: {
+                  q: questionDataParsed.problem,
+                  test_cases: convertElementsToSingleString(
+                    questionDataParsed.test_cases
+                  ),
+                  topics: questionDataParsed.topics,
+                  constraints: questionDataParsed.constraints,
+                  difficulty: questionDataParsed.difficulty,
+                },
+              }}
+            >
+              Solve Problem
+            </Link>
+          </Button>
         </div>
       </div>
     </div>

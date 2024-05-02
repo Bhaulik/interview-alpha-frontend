@@ -13,26 +13,27 @@ const CodeMetrics = ({
 
   const complexityToPercentage = (complexity) => {
     // Simple example of mapping, needs real logic based on actual expected values
-    switch (complexity) {
-      case "O(1)":
+    const normalizedComplexity = complexity.replace(/\s+/g, "").toLowerCase();
+    switch (normalizedComplexity) {
+      case "o(1)":
         return 100;
-      case "O(log n)":
+      case "o(log n)":
         return 90;
-      case "O(n)":
+      case "o(n)":
         return 70;
-      case "O(n log n)":
+      case "o(n log n)":
         return 50;
-      case "O(n^2)":
+      case "o(n^2)":
         return 20;
       default:
-        return 0; // for "O(n^3)" or worse
+        return 0; // for "O(n^3)" or worse, and any undefined complexities
     }
   };
 
   const getColor = (value) => {
-    if (value <= 20) return "bg-green-500";
-    if (value <= 70) return "bg-yellow-500";
-    return "bg-red-500";
+    if (value <= 20) return "bg-red-500";
+    if (value <= 80) return "bg-yellow-500";
+    return "bg-green-500";
   };
 
   return (
