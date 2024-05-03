@@ -1,7 +1,6 @@
 "use client";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+import Link from "next/link";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,16 +17,21 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import CodeEditor from "@/components/ui/codeeditor";
 import { useEffect, useState } from "react";
 import Navbar from "@/components/nav";
-import TestCaseDisplay from "@/components/ui/testcases";
 import CodeMetrics from "@/components/ui/feedback";
-import Link from "next/link";
-import { Copy } from "lucide-react";
-import { Input } from "@/components/ui/input";
 import { CopyButton } from "@/components/ui/copybtn";
 import { Loader2 } from "lucide-react";
 import HeaderDiv from "@/components/ui/headerdiv";
 import { useSearchParams } from "next/navigation";
 import FetchYouTubeData from "@/components/ui/web_resources";
+
+function trimQuestion(a) {
+  // Find the index of the colon character
+  let colonIndex = a.indexOf(":");
+
+  // Extract the substring up to the colon
+  let substrUntilColon = a.slice(0, colonIndex);
+  return substrUntilColon;
+}
 
 function convertElementsToStrings(arr) {
   if (typeof arr === "string" || arr instanceof String) {
@@ -58,26 +62,14 @@ export default function Home() {
   console.log("Question from test Cases:", testCasesFromParams);
   const sections = [
     { id: "codeeditor", label: "Code Editor" },
-    { id: "testcaseoutput", label: "Test Cases Output" },
-    { id: "improvedCode", label: "Code Metrics" },
-    { id: "recommendations", label: "Optimal Solution" },
-    { id: "conclusion", label: "Code Report" },
-    { id: "errorsWarnings", label: "Errors/Warnings" },
+    { id: "testcasesoutput", label: "Test Cases Output" },
+    { id: "codemetrics", label: "Code Metrics" },
+    { id: "optimalsolution", label: "Optimal Solution" },
+    { id: "codereport", label: "Code Report" },
+    { id: "resources", label: "Resources" },
   ];
-  //   const [codeSolution, setCodeSolution] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
-  //   const [array, setArray] = useState([]);
-  const [code, setCode] = useState("//write the code here");
-
-  //   const [introduction, setIntroduction] = useState("");
-  //   const [execution, setExecution] = useState("");
-  //   const [optimization, setOptimization] = useState("");
-  //   const [errorsWarnings, setErrorsWarnings] = useState("");
-  //   const [conclusion, setConclusion] = useState("");
-  //   const [recommendations, setRecommendations] = useState("");
-  //   const [improvedCode, setImprovedCode] = useState("");
+  const [code, setCode] = useState("");
   const [isRunning, setIsRunning] = useState(false);
-
   const [timeComplexity, setTimeComplexity] = useState("undefined");
   const [spaceComplexity, setSpaceComplexity] = useState("undefined");
   const [errors, setErrors] = useState("");
@@ -113,7 +105,6 @@ export default function Home() {
 
       if (!response.ok) {
         setIsRunning(false);
-        setIsLoading(false);
         throw new Error("Network response was not ok");
       }
       let data = await response.json();
@@ -125,7 +116,6 @@ export default function Home() {
 
       console.log("data", data);
       data = JSON.parse(data);
-      // setIsRunning(false);
       setTimeComplexity(data.time_complexity);
       setSpaceComplexity(data.space_complexity);
       setErrors(data.errors);
@@ -136,7 +126,6 @@ export default function Home() {
       setProgrammingLanguage(data.programming_language);
       setTestCasesUsed(data.test_cases_used);
       setRightSolution(data.right_solution);
-      // console.log("parsedjson", JSON.parse(data));
       setIsRunning(false);
     } catch (e) {
       setIsRunning(false);
@@ -148,6 +137,14 @@ export default function Home() {
   return (
     <div className="m-6">
       <HeaderDiv />
+      <div className="m-4">
+        <Link
+          className="bg-gray-800 text-white font-semibold text-sm px-6 py-2 rounded-lg shadow hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-opacity-50 transition duration-150 ease-in-out"
+          href="/setup"
+        >
+          Generate another question
+        </Link>
+      </div>
       <div className="max-w-xl  mx-auto px-2 py-8">
         <h1 className="text-2xl font-bold text-left mb-6">Question</h1>
         <h1 className="text-lg text-left mb-6">{questionFromParams}</h1>
@@ -166,7 +163,7 @@ export default function Home() {
             <h2 className="text-xl font-semibold">Topics:</h2>
             <ul className="list-disc list-inside">{topicsFromParams}</ul>
           </div>
-          <div>
+          <div id="codeeditor">
             <h2 className="text-xl font-semibold">Test Cases:</h2>
             <ul>{testCasesFromParams}</ul>
           </div>
@@ -185,9 +182,19 @@ export default function Home() {
                   Please wait
                 </Button>
               ) : (
-                <AlertDialogTrigger onClick={runCode}>
-                  Evaluate
-                </AlertDialogTrigger>
+                <div>
+                  {code.trim() === "" ? (
+                    <Button disabled className="bg-black text-white">
+                      Evaluate
+                    </Button>
+                  ) : (
+                    <div className="bg-black text-white font-semibold text-sm px-4 py-3 rounded-lg shadow hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:ring-opacity-50 transition duration-150 ease-in-out">
+                      <AlertDialogTrigger onClick={runCode}>
+                        Evaluate
+                      </AlertDialogTrigger>
+                    </div>
+                  )}
+                </div>
               )}
               <AlertDialogContent>
                 <AlertDialogHeader>
@@ -211,11 +218,14 @@ export default function Home() {
                 </AlertDialogFooter>
               </AlertDialogContent>
             </div>
+            <code className="text-sm">
+              we'll detect your preferred language automagically 🪄
+            </code>
             <div className="flex justify-end m-2"></div>
             <CodeEditor code={code} setCode={setCode} />
           </div>
           <div
-            id="execution"
+            id="testcasesoutput"
             className="execution rounded-lg border bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950"
           >
             <h2 className="mb-4 text-lg font-medium">Test Cases Output</h2>
@@ -223,7 +233,7 @@ export default function Home() {
             {convertElementsToStrings(testCasesUsed)}
           </div>
           <div
-            id="code-metrics"
+            id="codemetrics"
             className="code-metrics rounded-lg border bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950"
           >
             <h2 className="mb-4 text-lg font-medium">Code Metrics 🧮</h2>
@@ -234,7 +244,10 @@ export default function Home() {
             />
             <div>Language detected: {programmingLanguage}</div>
           </div>
-          <div className="rounded-lg border bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950">
+          <div
+            id="optimalsolution"
+            className="rounded-lg border bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950"
+          >
             <h2 className="mb-4 text-lg font-medium">Optimal Solution</h2>
             <ScrollArea className="h-[300px] rounded-md border border-gray-200 bg-gray-50 p-3 text-sm shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200">
               <pre className="whitespace-pre-wrap break-words">
@@ -242,7 +255,10 @@ export default function Home() {
               </pre>
             </ScrollArea>
           </div>{" "}
-          <div className="rounded-lg border bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950">
+          <div
+            id="codereport"
+            className="rounded-lg border bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950"
+          >
             <h2 className="mb-4 text-lg font-medium">Code Report</h2>
             <ScrollArea className="h-[300px] rounded-md border border-gray-200 bg-gray-50 p-3 text-sm shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200">
               <pre className="whitespace-pre-wrap break-words">
@@ -250,10 +266,13 @@ export default function Home() {
               </pre>
             </ScrollArea>
           </div>{" "}
-          <div className="rounded-lg border bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950">
+          <div
+            id="resources"
+            className="rounded-lg border bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950"
+          >
             <h2 className="mb-4 text-lg font-medium"></h2>
             <div>
-              <FetchYouTubeData qs={questionFromParams} />
+              <FetchYouTubeData qs={trimQuestion(questionFromParams)} />
             </div>
           </div>
         </div>

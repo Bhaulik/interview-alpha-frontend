@@ -8,6 +8,7 @@ import {
   SelectContent,
   Select,
 } from "@/components/ui/select";
+import { Loader2 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox"; // Import the Checkbox component from shadcn
 import { Button } from "@/components/ui/button";
 import HeaderDiv from "@/components/ui/headerdiv";
@@ -118,7 +119,15 @@ export default function Setup() {
               </div>
             </div>
           </div>
-          <Button type="submit">Generate Question</Button>
+
+          {isloading ? (
+            <Button disabled>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Please wait
+            </Button>
+          ) : (
+            <Button type="submit">Generate Question</Button>
+          )}
         </form>
         <div>
           <code>

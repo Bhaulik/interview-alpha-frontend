@@ -11,15 +11,17 @@ function FetchYouTubeData({ qs }) {
   const handleFetchData = async () => {
     setIsLoading(true);
     setError(null);
+    console.log("qs", qs);
+    console.log("qs type", typeof qs);
     try {
-      const response = await fetch("http://127.0.0.1:8000/youtube/", {
+      const response = await fetch("http://127.0.0.1:8000/youtube", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
         body: JSON.stringify({
-          question: "" + qs,
+          question: "max subarray",
         }),
       });
 
@@ -30,10 +32,7 @@ function FetchYouTubeData({ qs }) {
       const data = await response.json();
       console.log("Fetched data:", data); // Debug the structure of data
       console.log("Fetched data type:", typeof data);
-      // Ensure the data is an array
-      //   let dataP = JSON.parse(data);
-      console.log("is array", typeof data);
-      //   let dataP = data.split(",").slice(1, -1);
+
       let dataP = data.trim().slice(1, -1);
       let cleanedUrls = dataP.split("', '");
       cleanedUrls[0] = cleanedUrls[0].slice(1);
@@ -41,14 +40,7 @@ function FetchYouTubeData({ qs }) {
         cleanedUrls.length - 1
       ].slice(0, -1);
       console.log("cleanedUrls", cleanedUrls);
-      //   const cleanedUrls = dataP.map((url) => cleanUrl(url));
       setCleanedUrls(cleanedUrls);
-      //   dataP = dataP.map((item) => {
-      //     item = item.trim();
-      //   }
-      //   console.log("dataP", dataP);
-      //   console.log("dataP Type", typeof dataP);
-      //   setVideoLinks(Array.isArray(data) ? data : dataP);
     } catch (error) {
       setError("Failed to load data: " + error.message);
     } finally {
@@ -69,14 +61,19 @@ function FetchYouTubeData({ qs }) {
       {error && <p>Error: {error}</p>}
       {cleanedUrls.length > 0 && (
         <div>
-          <h3>YouTube Videos on {qs}:</h3>
+          <h3>YouTube Videos:</h3>
           <ul className="text-black">
             {cleanedUrls.map((link, index) => (
-              <li key={index} className="text-orange-600">
-                <a href={link} target="_blank">
-                  Watch Video {index + 1}
+              <ol key={index} className=" m-2 ">
+                {index + 1}.{" "}
+                <a
+                  href={link}
+                  target="_blank"
+                  className="text-orange-600  underline"
+                >
+                  {link}
                 </a>
-              </li>
+              </ol>
             ))}
           </ul>
         </div>

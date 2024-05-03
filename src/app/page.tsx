@@ -7,10 +7,13 @@ export default function Component() {
         <div className="container px-4 md:px-6 text-center">
           <div className="space-y-4">
             <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
-              Conquer Coding Challenges with Ease
+              Interview Alpha AI
             </h1>
             <h2 className="text-2xl font-bold tracking-tighter sm:text-2xl xl:text-2xl/none">
               Powered by Google Gemini ai
+            </h2>{" "}
+            <h2 className="text-md font-bold tracking-tighter sm:text-md xl:text-md/none">
+              Developed by Bhaulik Patel
             </h2>
             <p className="max-w-[600px] text-gray-500 md:text-xl dark:text-gray-400 mx-auto">
               Elevate your coding skills with our AI-powered Interview
@@ -37,6 +40,15 @@ export default function Component() {
                 Our AI-driven platform analyzes your strengths and weaknesses to
                 provide tailored coding challenges, helping you improve
                 efficiently.
+              </p>
+            </div>{" "}
+            <div className="grid gap-1 text-center">
+              <ReportIcon className="h-8 w-8 text-gray-900 dark:text-gray-50 mx-auto" />
+              <h3 className="text-lg font-bold">Easy Report Interface</h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                The Interface is an all in one interface that tells you your run
+                times, your errors, optimizations you could make and even web
+                resources and vides to enhance your understanding
               </p>
             </div>
             <div className="grid gap-1 text-center">
@@ -96,7 +108,27 @@ function RocketIcon(props) {
     </svg>
   );
 }
-
+function ReportIcon(props) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M8 6h8" />
+      <path d="M8 12h8" />
+      <path d="M8 18h8" />
+      <path d="M4 4v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4" />
+    </svg>
+  );
+}
 function UserIcon(props) {
   return (
     <svg
